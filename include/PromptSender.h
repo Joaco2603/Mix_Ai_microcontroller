@@ -14,7 +14,7 @@ private:
     static const char* ssid;
     static const char* password;
     static const char* serverUrl;
-    bool wifiConnected = false;
+    bool wifiConnected;
 };
 
 #endif
