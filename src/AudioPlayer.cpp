@@ -1,12 +1,15 @@
 // AudioPlayer.cpp
-// #include <M5Unified.h>
+#include <M5GFX.h>
 #include "AudioPlayer.h"
-// #include <Audio.h>
 
 // Configuración de pines I2S para M5Stack
 #define I2S_DOUT      2
 #define I2S_BCLK      12  
 #define I2S_LRC       0
+
+
+extern M5GFX display;
+
 
 AudioPlayer::AudioPlayer() {
     audio = nullptr;
@@ -22,12 +25,6 @@ AudioPlayer::~AudioPlayer() {
 }
 
 bool AudioPlayer::begin() {
-    // Inicializar SD si no está inicializada
-    if (!SD.begin()) {
-        Serial.println("Error: No se pudo inicializar SD Card");
-        return false;
-    }
-    
     // Crear objeto Audio
     audio = new Audio();
     
@@ -35,7 +32,7 @@ bool AudioPlayer::begin() {
     audio->setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
     
     // Configurar volumen inicial
-    audio->setVolume(currentVolume);
+    audio->setVolume(15);
     
     Serial.println("AudioPlayer inicializado correctamente");
     return true;
@@ -43,13 +40,34 @@ bool AudioPlayer::begin() {
 
 bool AudioPlayer::playFile(const char* filename) {
     if (!audio) {
-        Serial.println("Error: Audio no inicializado");
+        display.println("Error: Audio no inicializado");
         return false;
     }
+
+    if (!SD.exists(filename)) {
+        Serial.printf("❌ Error: Archivo %s no encontrado\n", filename);
+        display.println("Error: Archivo no encontrado");
+        
+        // DEBUG: Listar archivos en la raíz para verificar
+        Serial.println("=== ARCHIVOS EN SD ===");
+        File root = SD.open("/");
+        if (root) {
+            File file = root.openNextFile();
+            while (file) {
+                Serial.printf("- %s (%d bytes)\n", file.name(), file.size());
+                file = root.openNextFile();
+            }
+            root.close();
+        }
+        Serial.println("=== FIN LISTA ===");
+        
+        return false;
+    }
+
     
     // Verificar si el archivo existe
     if (!SD.exists(filename)) {
-        Serial.printf("Error: Archivo %s no encontrado\n", filename);
+        display.println("Error: Archivo no encontrado\n");
         return false;
     }
 

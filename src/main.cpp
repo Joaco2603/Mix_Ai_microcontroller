@@ -1,74 +1,64 @@
-#include <Adafruit_GFX.h>
-#include <Adafruit_ILI9341.h>
-#include <SPI.h>
-#include <XPT2046_Touchscreen.h>
+#include <M5GFX.h>
 #include "PromptSender.h"
 #include "AudioPlayer.h"
 
-// Display pins for M5Core2
-#define TFT_CS 5
-#define TFT_DC 15
-#define TFT_RST -1  // Not used for M5Core2
-#define TFT_MOSI 23 // Not needed for hardware SPI
-#define TFT_MISO 38 // Not needed for hardware SPI
-#define TFT_SCLK 18 // Not needed for hardware SPI
-
-// Display setup
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
-#define TFT_ROTATION 3 // Adjust based on your display orientation
-
-// Touch setup (if needed)
-#define TOUCH_CS -1 // Not used in your original code
-XPT2046_Touchscreen touch(TOUCH_CS);
-
 PromptSender *sender = nullptr;
 AudioPlayer audioPlayer;
-
-void clearScreen() {
-  tft.fillScreen(ILI9341_BLACK);
-  tft.setCursor(0, 0);  // Resetear cursor a la posición inicial
-}
+M5GFX display;
 
 void setup()
 {
-    Serial.begin(115200);
+  Serial.begin(115200); // ¡FALTABA!
+  display.begin();
 
-    // Initialize display
-    tft.begin();
-    tft.setRotation(TFT_ROTATION);
-    tft.fillScreen(ILI9341_BLACK);
-    tft.setTextColor(ILI9341_BLACK,ILI9341_WHITE);
-    tft.setTextSize(2);
-    tft.println("Iniciando sistema...");
+  // Limpiar pantalla y configurar
+  display.clear();
+  display.setTextSize(2);
+  display.println("Iniciando M5Core2...");
 
-    // Initialize audio
-    audioPlayer.playFile("./music.mp3");
+  audioPlayer.begin();
 
-    // Create objects
-    sender = new PromptSender();
+  // Inicializar AudioPlayer
+  if (!audioPlayer.begin())
+  { // ¡FALTABA!
+    display.println("Error: AudioPlayer");
+    return;
+  }
 
-    // Connect WiFi
+  // Ahora sí reproducir
+  audioPlayer.playFile("/MUSIC.MP3");
+  delay(10000);
+
+  // Crear objetos después de inicializar M5
+  sender = new PromptSender();
+
+  // Conectar WiFi
+  delay(1000);
+  display.clear();
+  if (sender->initWiFi())
+  {
     delay(1000);
-    tft.fillScreen(ILI9341_BLACK);
-    clearScreen();
-    if (sender->initWiFi())
-    {
-        delay(1000);
 
-        // Send initial prompt
-        tft.fillScreen(ILI9341_BLACK);
-        sender->sendPrompt("Sistema iniciado");
-    }
+    // Enviar prompt inicial
+    display.clear();
+    sender->sendPrompt("Sistema iniciado");
+  }
 
-    // Show controls
-    tft.fillScreen(ILI9341_BLACK);
-    tft.println("Controles:");
-    tft.println("A: Subir volumen");
-    tft.println("B: Bajar volumen");
-    tft.println("C: Play/Pause");
+  // Mostrar controles
+  display.clear();
+  display.println("Controles:");
+  display.println("A: Subir volumen");
+  display.println("B: Bajar volumen");
+  display.println("C: Play/Pause");
 }
 
 void loop()
 {
-    audioPlayer.update();
+  audioPlayer.update();
+
+  // ¡FALTABA! Leer botones (si usas M5Stack)
+  // M5.update();
+  // if (M5.BtnA.wasPressed()) audioPlayer.volumeUp();
+  // if (M5.BtnB.wasPressed()) audioPlayer.volumeDown();
+  // if (M5.BtnC.wasPressed()) audioPlayer.togglePlayPause();
 }

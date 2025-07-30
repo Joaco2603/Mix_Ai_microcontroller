@@ -5,33 +5,34 @@
 #include "Audio.h"
 #include <SD.h>
 
-class AudioPlayer {
+class AudioPlayer
+{
 private:
-    Audio* audio;
+    Audio *audio;
     bool isPlaying;
     int currentVolume;
     String currentFile;
-    
+
 public:
     AudioPlayer();
     ~AudioPlayer();
-    
+
     bool begin();
-    bool playFile(const char* filename);
+    bool playFile(const char *filename);
     void stop();
     void pause();
     void resume();
     void togglePlayPause();
-    
-    void setVolume(int volume);  // 0-21
+
+    void setVolume(int volume); // 0-21
     void volumeUp();
     void volumeDown();
     int getVolume();
-    
+
     bool isCurrentlyPlaying();
     String getCurrentFile();
-    
-    void update();  // Llamar en loop()
+
+    void update(); // Llamar en loop()
 };
 
 #endif

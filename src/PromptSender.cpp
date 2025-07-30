@@ -1,41 +1,40 @@
+#include <M5GFX.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include "PromptSender.h"
-#include <Adafruit_GFX.h>
-#include <Adafruit_ILI9341.h>
 
-extern Adafruit_ILI9341 tft; // Reference to the display object from main file
-
-// Network configuration - change these values
-const char* PromptSender::ssid = "GARAJE";
-const char* PromptSender::password = "JEjb1307*2603*";
+// Configuración de red - cambiá estos valores
+const char* PromptSender::ssid = WIFI_SSID;
+const char* PromptSender::password = WIFI_PASSWORD;
 const char* PromptSender::serverUrl = "http://192.168.1.23:5000/query";
+
+extern M5GFX display;
 
 PromptSender::PromptSender() {
     wifiConnected = false;
 }
 
+
 bool PromptSender::initWiFi() {
-    tft.setTextSize(2);
-    tft.println("Conectando WiFi...");
+    display.println("Iniciando M5Core2...");
     
     WiFi.begin(ssid, password);
     
     int attempts = 0;
     while (WiFi.status() != WL_CONNECTED && attempts < 20) {
         delay(500);
-        tft.print(".");
+        display.print(".");
         attempts++;
     }
     
     if (WiFi.status() == WL_CONNECTED) {
-        tft.println("\nWiFi OK!");
-        tft.print("IP: ");
-        tft.println(WiFi.localIP());
+        display.println("\nWiFi OK!");
+        display.print("IP: ");
+        display.println(WiFi.localIP());
         wifiConnected = true;
         return true;
     } else {
-        tft.println("\nError WiFi!");
+        display.println("\nError WiFi!");
         wifiConnected = false;
         return false;
     }
@@ -43,12 +42,12 @@ bool PromptSender::initWiFi() {
 
 bool PromptSender::sendPrompt(const String& prompt) {
     if (!wifiConnected) {
-        tft.println("WiFi no conectado");
+        display.println("WiFi no conectado");
         return false;
     }
     
     if (WiFi.status() != WL_CONNECTED) {
-        tft.println("WiFi desconectado");
+        display.println("WiFi desconectado");
         wifiConnected = false;
         return false;
     }
@@ -58,21 +57,21 @@ bool PromptSender::sendPrompt(const String& prompt) {
     http.addHeader("Content-Type", "application/json");
     http.setTimeout(10000); // 10 segundos timeout
     
-    // Build JSON payload
+    // Construir JSON payload
     String jsonPayload = "{\"prompt\": \"" + prompt + "\"}";
     
-    tft.println("Enviando...");
+    display.println("Enviando...");
     int httpResponseCode = http.POST(jsonPayload);
     
     if (httpResponseCode > 0) {
         String response = http.getString();
-        tft.println("Respuesta:");
-        tft.println("Código: " + String(httpResponseCode));
-        tft.println(response);
+        display.println("Respuesta:");
+        display.println("Código: " + String(httpResponseCode));
+        display.println(response);
         http.end();
         return true;
     } else {
-        tft.println("Error HTTP: " + String(httpResponseCode));
+        display.println("Error HTTP: " + String(httpResponseCode));
         http.end();
         return false;
     }
