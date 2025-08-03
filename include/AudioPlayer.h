@@ -4,6 +4,7 @@
 
 #include "Audio.h"
 #include <SD.h>
+#include <SPI.h>
 
 class AudioPlayer
 {

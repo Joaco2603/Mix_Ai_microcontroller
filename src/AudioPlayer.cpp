@@ -13,7 +13,7 @@ AudioPlayer::AudioPlayer()
 {
     audio = nullptr;
     isPlaying = false;
-    currentVolume = 15; // Volumen medio
+    currentVolume = 15;
     currentFile = "";
 }
 
@@ -27,16 +27,25 @@ AudioPlayer::~AudioPlayer()
 
 bool AudioPlayer::begin()
 {
+    if (!SD.begin(4))
+    {
+        Serial.println("❌ No se pudo montar la SD");
+        return false;
+    }
+    Serial.println("✅ SD montada");
+
     // Crear objeto Audio
     audio = new Audio();
 
     // Configurar pines I2S
-    audio->setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+    // audio->setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+    audio->setPinout(12, 0, 2);
 
     // Configurar volumen inicial
     audio->setVolume(15);
 
     Serial.println("AudioPlayer inicializado correctamente");
+
     return true;
 }
 
