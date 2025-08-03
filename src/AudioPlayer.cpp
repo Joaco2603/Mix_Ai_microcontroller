@@ -3,9 +3,10 @@
 #include "AudioPlayer.h"
 
 // Configuración de pines I2S para M5Stack
-#define I2S_DOUT 2
 #define I2S_BCLK 12
 #define I2S_LRC 0
+#define I2S_DOUT 2
+#define SD_CS 4
 
 extern M5GFX display;
 
@@ -27,7 +28,7 @@ AudioPlayer::~AudioPlayer()
 
 bool AudioPlayer::begin()
 {
-    if (!SD.begin(4))
+    if (!SD.begin(SD_CS))
     {
         Serial.println("❌ No se pudo montar la SD");
         return false;
