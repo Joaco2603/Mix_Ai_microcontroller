@@ -50,24 +50,14 @@ bool AudioPlayer::playFile(const char *filename)
 
     if (!SD.exists(filename))
     {
-        Serial.printf("❌ Error: Archivo %s no encontrado\n", filename);
-        display.println("Error: Archivo no encontrado");
-
-        // DEBUG: Listar archivos en la raíz para verificar
-        Serial.println("=== ARCHIVOS EN SD ===");
         File root = SD.open("/");
-        if (root)
+        File file = root.openNextFile();
+        while (file)
         {
-            File file = root.openNextFile();
-            while (file)
-            {
-                Serial.printf("- %s (%d bytes)\n", file.name(), file.size());
-                file = root.openNextFile();
-            }
-            root.close();
+            Serial.print("Archivo: ");
+            Serial.println(file.name());
+            file = root.openNextFile();
         }
-        Serial.println("=== FIN LISTA ===");
-
         return false;
     }
 

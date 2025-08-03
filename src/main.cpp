@@ -18,11 +18,11 @@ void setup()
   display.setTextSize(2);
   display.println("Iniciando M5Core2...");
 
+  delay(100000);
   audioPlayer.begin();
-
+  
   // Ahora sí reproducir
-  audioPlayer.playFile("/music.MP3");
-  delay(10000);
+  audioPlayer.playFile("/music.mp3");
 
   // Conectar WiFi
   // Mostrar controles
