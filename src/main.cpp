@@ -1,6 +1,9 @@
 #include <M5GFX.h>
+#include "MyWebServer.h"
 #include "PromptSender.h"
 #include "AudioPlayer.h"
+
+MyWebServer myWebServer;
 
 PromptSender *sender = nullptr;
 AudioPlayer audioPlayer;
@@ -10,6 +13,7 @@ void setup()
 {
   Serial.begin(115200); // ¡FALTABA!
   display.begin();
+  myWebServer.start();
 
   // Limpiar pantalla y configurar
   display.clear();
