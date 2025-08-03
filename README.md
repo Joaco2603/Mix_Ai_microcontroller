@@ -23,6 +23,13 @@ git clone https://github.com/Joaco2603/MixAi_microcontroler.git
 
 ```
 
+min(static_cast<size_t>(my_uint32_var), my_size_t_var)
+min(my_uint32_var, static_cast<uint32_t>(my_size_t_var))
+
+agregar password
+agregar ssid
+agregar puerto
+
 Nombre de tu Proyecto ESP32
 📄 Descripción
 Una breve y concisa descripción de lo que hace tu proyecto.

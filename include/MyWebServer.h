@@ -4,9 +4,6 @@
 class MyWebServer {
 public:
   void start();
-
-private:
-  void initializeWebSockets();
 };
 
 #endif

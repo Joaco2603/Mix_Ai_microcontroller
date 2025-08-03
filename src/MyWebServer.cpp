@@ -1,36 +1,46 @@
+#include <M5GFX.h>
+
 #include "MyWebServer.h"
 #include "Routes.h"
-#include "./adapter/WebSocketAdapter.h"
 
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 
-const char* ssid = "Garaje";
-const char* password = "Jejb2603*1307*";
+const char *ssid = "GARAJE";
+const char *password = "JEjb1307*2603*";
 
-AsyncWebServer webServer(80);
-WebSocketAdapter webSocketAdapter(&webServer);
+extern M5GFX display;
 
-void MyWebServer::start() {
+AsyncWebServer webServer(8080);
+
+void MyWebServer::start()
+{
   // Conexión WiFi
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 20)
+  {
     delay(500);
-    Serial.print(".");
+    display.print(".");
+    attempts++;
   }
-  Serial.println("\nWiFi conectado");
-  Serial.println(WiFi.localIP());
+
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    display.println("\nWiFi OK!");
+    display.print("IP: ");
+    display.println(WiFi.localIP());
+  }
+  else
+  {
+    display.println("\nError WiFi!");
+  }
+
+  delay(3000);
 
   // Inicializar rutas HTTP
   Routes::init(webServer);
 
-  // Inicializar WebSockets
-  initializeWebSockets();
-
   // Iniciar servidor
   webServer.begin();
-}
-
-void MyWebServer::initializeWebSockets() {
-  webSocketAdapter.initialize();
 }
