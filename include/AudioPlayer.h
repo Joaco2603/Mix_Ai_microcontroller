@@ -2,7 +2,7 @@
 #ifndef AUDIOPLAYER_H
 #define AUDIOPLAYER_H
 
-#include "Audio.h"
+// #include "Audio.h"
 #include "AudioMixer.h"
 #include <SD.h>
 #include <SPI.h>
@@ -21,12 +21,10 @@ private:
     
     public:
     AudioPlayer();
-    ~AudioPlayer();
     
     void setMixer(AudioMixer* mixer);
 
     bool begin();
-    bool playFile(const char *filename);
     bool playMixedFiles(const char* f1, const char* f2, const char* f3);
     void stop();
     void pause();
