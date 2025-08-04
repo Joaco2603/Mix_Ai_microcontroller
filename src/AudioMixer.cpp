@@ -9,12 +9,6 @@ void AudioMixer::begin()
     trackCount = 0;
 }
 
-// void AudioMixer::addTrack(const char* filename, float gain) {
-//     if (trackCount < MAX_TRACKS) {
-//         tracks[trackCount++].open(filename, gain);
-//     }
-// }
-
 void AudioMixer::addTrack(const char* filename, float gain) {
     printf("Adding track: %s, trackCount: %d, MAX_TRACKS: %d\n", 
            filename ? filename : "NULL", trackCount, MAX_TRACKS);
@@ -38,31 +32,6 @@ void AudioMixer::addTrack(const char* filename, float gain) {
     }
 }
 
-// size_t AudioMixer::mix(int16_t *outBuffer, size_t numSamples)
-// {
-//     memset(outBuffer, 0, sizeof(int16_t) * numSamples);
-
-//     for (int i = 0; i < trackCount; ++i)
-//     {
-//         if (!tracks[i].isActive())
-//             continue;
-
-//         int16_t temp[numSamples];
-//         size_t read = tracks[i].getSamples(temp, numSamples);
-
-//         for (size_t j = 0; j < read; ++j)
-//         {
-//             int32_t mixed = (int32_t)outBuffer[j] + (int32_t)(temp[j] * tracks[i].gain);
-//             if (mixed > 32767)
-//                 mixed = 32767;
-//             if (mixed < -32768)
-//                 mixed = -32768;
-//             outBuffer[j] = (int16_t)mixed;
-//         }
-//     }
-
-//     return numSamples;
-// }
 
 size_t AudioMixer::mix(int16_t *outBuffer, size_t numSamples)
 {

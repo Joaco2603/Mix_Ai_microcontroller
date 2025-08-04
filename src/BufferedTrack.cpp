@@ -25,18 +25,6 @@ void BufferedTrack::refill() {
     }
 }
 
-// size_t BufferedTrack::getSamples(int16_t* buffer, size_t numSamples) {
-//     if (!active) return 0;
-
-//     size_t samplesRead = 0;
-//     while (samplesRead < numSamples && active) {
-//         if (bufferIndex >= bufferFill) refill();
-//         if (!active || bufferFill == 0) break;
-
-//         buffer[samplesRead++] = internalBuffer[bufferIndex++];
-//     }
-//     return samplesRead;
-// }
 
 size_t BufferedTrack::getSamples(int16_t* buffer, size_t numSamples) {
     if (!active || !buffer || !internalBuffer) return 0;

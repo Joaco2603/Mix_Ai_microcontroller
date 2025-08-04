@@ -77,8 +77,8 @@ bool AudioPlayer::playMixedFiles(const char *f1, const char *f2, const char *f3)
 
     mixer->begin();
     mixer->addTrack(f1, 0.7f);
-    // mixer->addTrack(f2, 0.3f);
-    // mixer->addTrack(f3, 0.3f);
+    mixer->addTrack(f2, 0.3f);
+    mixer->addTrack(f3, 0.3f);
     isPlaying = true;
     return true;
 }
@@ -186,7 +186,7 @@ void AudioPlayer::update()
 
     if (n > 0)
     {
-        // writeToI2S(buffer, n);
+        writeToI2S(buffer, n);
     }
     else
     {
@@ -195,55 +195,20 @@ void AudioPlayer::update()
     }
 }
 
-// void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
-// {
-//     int16_t stereoBuffer[1024];
-//     for (size_t i = 0; i < samples; ++i)
-//     {
-//         stereoBuffer[2 * i] = buffer[i];
-//         stereoBuffer[2 * i + 1] = buffer[i];
-//     }
-
-//     size_t bytes_written;
-//     esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
-//     if (err != ESP_OK) {
-//         Serial.printf("Error en i2s_write: %d\n", err);
-//     }
-// }
-
-// void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
-// {
-//     // DEBUG: Verificar si el buffer tiene audio
-//     bool hasAudio = false;
-//     for (size_t i = 0; i < samples && !hasAudio; ++i) {
-//         if (buffer[i] != 0) hasAudio = true;
-//     }
-
-//     int16_t stereoBuffer[1024];
-//     for (size_t i = 0; i < samples; ++i)
-//     {
-//         stereoBuffer[2 * i] = buffer[i];
-//         stereoBuffer[2 * i + 1] = buffer[i];
-//     }
-
-//     size_t bytes_written;
-//     esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
-
-// }
 
 void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
 {
-    // int16_t stereoBuffer[1024];
-    // for (size_t i = 0; i < samples; ++i)
-    // {
-    //     stereoBuffer[2 * i] = buffer[i];     // Canal izquierdo
-    //     stereoBuffer[2 * i + 1] = buffer[i]; // Canal derecho
-    // }
+    int16_t stereoBuffer[1024];
+    for (size_t i = 0; i < samples; ++i)
+    {
+        stereoBuffer[2 * i] = buffer[i];     // Canal izquierdo
+        stereoBuffer[2 * i + 1] = buffer[i]; // Canal derecho
+    }
 
-    // size_t bytes_written;
-    // esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
-    // if (err != ESP_OK)
-    // {
-    //     Serial.printf("Error en i2s_write: %d\n", err);
-    // }
+    size_t bytes_written;
+    esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+    if (err != ESP_OK)
+    {
+        Serial.printf("Error en i2s_write: %d\n", err);
+    }
 }
