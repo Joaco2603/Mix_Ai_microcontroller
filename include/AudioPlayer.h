@@ -3,37 +3,47 @@
 #define AUDIOPLAYER_H
 
 #include "Audio.h"
+#include "AudioMixer.h"
 #include <SD.h>
 #include <SPI.h>
 
 class AudioPlayer
 {
 private:
-    Audio *audio;
+    // Audio *audio;
     bool isPlaying;
     int currentVolume;
     String currentFile;
 
-public:
+    AudioMixer* mixer = nullptr;
+    int16_t outputBuffer[512];
+
+    
+    public:
     AudioPlayer();
     ~AudioPlayer();
+    
+    void setMixer(AudioMixer* mixer);
 
     bool begin();
     bool playFile(const char *filename);
+    bool playMixedFiles(const char* f1, const char* f2, const char* f3);
     void stop();
     void pause();
     void resume();
     void togglePlayPause();
-
+    
     void setVolume(int volume); // 0-21
     void volumeUp();
     void volumeDown();
     int getVolume();
-
+    
     bool isCurrentlyPlaying();
     String getCurrentFile();
 
-    void update(); // Llamar en loop()
+    void writeToI2S(int16_t* buffer, size_t samples);
+    
+    void update();
 };
 
 #endif
