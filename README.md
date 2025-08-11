@@ -3,43 +3,29 @@
 </div>
 <h1 align="center">🚀 MIX AI</h1>
 
+<!-- ## 📝 Cambia esto
 
-
-## Clone project
-
-```bash
-git clone https://github.com/Joaco2603/MixAi_microcontroler.git
-
-```
-
-min(static_cast<size_t>(my_uint32_var), my_size_t_var)
-min(my_uint32_var, static_cast<uint32_t>(my_size_t_var))
-
-agregar password
-agregar ssid
-
-agregar puerto
-
+- Para evitar errores de conversión entre tipos, usa:
+  - `min(static_cast<size_t>(my_uint32_var), my_size_t_var)`
+  - `min(my_uint32_var, static_cast<uint32_t>(my_size_t_var))`
+- Estos patrones ayudan a mantener la compatibilidad entre tipos `size_t` y `uint32_t` en tu código. -->
 
 ## 📄 Descripción
 
-Código del microcontrolador de mixer de la primera, Mixer de audio para conciertos y grabaciones, con LLM integrado
-
+Código del microcontrolador de la primera, Mixer de audio para conciertos y grabaciones, con LLM integrado
 
 🛠️ Requisitos de Hardware
 Lista los componentes de hardware necesarios para replicar tu proyecto.
 
-ESP32 Dev Kit C (o el modelo específico de tu ESP32)
+ESP32 M5 Stack V1.11
 
-[Menciona tus sensores, ej., Sensor BME280]
-
-[Menciona otros módulos, ej., Pantalla OLED, Relés, etc.]
+PCM5102
 
 Cables Jumper
 
 Protoboard (opcional)
 
-Fuente de alimentación de 5V (o la que uses)
+Fuente de alimentación de 5V (opcional)
 
 💻 Requisitos de Software
 Detalla el entorno de desarrollo y las librerías necesarias.
@@ -54,11 +40,11 @@ PlatformIO: Se configura automáticamente con platform = espressif32 en platform
 
 Librerías de Arduino:
 
-[Nombre de la librería 1, ej., PubSubClient]
-
-[Nombre de la librería 2, ej., Adafruit BME280 Library]
-
-[Añade todas las librerías que uses]
+    - m5stack/M5GFX@^0.2.9
+    - https://github.com/schreibfaul1/ESP32-audioI2S.git
+    - https://github.com/ESP32Async/ESPAsyncWebServer
+    - bblanchon/ArduinoJson@^6.21.3
+    - https://github.com/nlohmann/json
 
 Puedes instalarlas a través del Gestor de Librerías en Arduino IDE (Herramientas > Gestionar Librerías...) o añadiéndolas a lib_deps en platformio.ini si usas PlatformIO.
 
@@ -82,6 +68,7 @@ Rellena tus credenciales:
 Modifica el archivo Config.h con tus propias credenciales y configuraciones:
 
 ### C++
+
 ```
 // Config.h (Este archivo NO se sube a GitHub)
 
@@ -106,7 +93,15 @@ const char* API_KEY = "tu_clave_api_secreta";
 ```
 
 🚀 Puesta en Marcha
-Pasos para compilar y cargar el código en tu ESP32.
+
+## Clona el proyecto primero
+
+```bash
+git clone https://github.com/Joaco2603/MixAi_microcontroler.git
+
+```
+
+## Pasos para compilar y cargar el código en tu ESP32.
 
 Conecta tu ESP32 a tu computadora vía USB.
 
@@ -124,10 +119,12 @@ Carga el código: Haz clic en el botón "Subir" (Upload) en tu IDE.
 
 Abre el Monitor Serial: Una vez cargado, abre el Monitor Serial (Herramientas > Monitor Serial) para ver la salida y verificar el funcionamiento. Asegúrate de configurar el baud rate correcto (ej., 115200).
 
+[!WARNING] Verificar la dirección IP
+
+Verificación de la dirección IP: El ESP32 actúa como un servidor al conectarse a internet, y su dirección IP local puede cambiar cada vez que se reinicia. Es crucial que verifiques la dirección IP del dispositivo antes de realizar cualquier llamada a la API. Por ejemplo, en un momento podría ser 192.168.0.3 y, en otro, 192.168.0.4.
+
 ## 📜 License
 
 MIX AI is an MIT-licensed open source project.
 
-
 Mix AI is [MIT licensed](LICENSE).
-

@@ -33,9 +33,7 @@ size_t BufferedTrack::getSamples(int16_t* buffer, size_t numSamples) {
     while (samplesRead < numSamples && active) {
         if (bufferIndex >= bufferFill) {
             refill();
-            // CRÍTICO: Verificar que refill() resetee bufferIndex
             if (bufferIndex >= bufferFill) {
-                // Si refill() falló o no reseteo bufferIndex
                 Serial.printf("ERROR: After refill bufferIndex=%zu >= bufferFill=%zu\n", 
                              bufferIndex, bufferFill);
                 break;
@@ -44,8 +42,7 @@ size_t BufferedTrack::getSamples(int16_t* buffer, size_t numSamples) {
         
         if (!active || bufferFill == 0) break;
         
-        // Verificación adicional de seguridad
-        if (bufferIndex >= 2048) {  // asumiendo que tienes bufferCapacity
+        if (bufferIndex >= 2048) {
             Serial.printf("ERROR: bufferIndex=%zu >= bufferCapacity\n", bufferIndex);
             break;
         }
