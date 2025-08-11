@@ -1,19 +1,8 @@
-<p align="center">
-  <a target="blank"><img src="./assets/image.png" width="200" alt="Mix Ai Logo" /></a>
-</p>
+<div align="center">
+<img src="./assets/image.png" width="200" alt="AI Mix Logo" />
+</div>
+<h1 align="center">🚀 MIX AI</h1>
 
-  <h1 align="center">🚀 MIX AI</p>
-    <p align="center">
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-
-
-## Description
-
-Expocenfo 2025.
 
 
 ## Clone project
@@ -28,28 +17,14 @@ min(my_uint32_var, static_cast<uint32_t>(my_size_t_var))
 
 agregar password
 agregar ssid
+
 agregar puerto
 
-Nombre de tu Proyecto ESP32
-📄 Descripción
-Una breve y concisa descripción de lo que hace tu proyecto.
-¿Qué problema resuelve? ¿Cuál es su objetivo principal? ¿Qué funcionalidad ofrece?
 
-Ejemplo:
-"Este proyecto es un sistema de monitoreo ambiental basado en ESP32 que recopila datos de temperatura, humedad y presión atmosférica usando un sensor BME280. Los datos se envían a un servidor MQTT para su visualización y análisis en tiempo real. Incluye un modo de bajo consumo para optimizar la duración de la batería."
+## 📄 Descripción
 
-✨ Características
-Enumera las funcionalidades clave de tu proyecto.
+Código del microcontrolador de mixer de la primera, Mixer de audio para conciertos y grabaciones, con LLM integrado
 
-Conectividad Wi-Fi: Conexión a redes inalámbricas para comunicación.
-
-Gestión de Sensores: Interacción con [Menciona tus sensores, ej., BME280, DHT11, etc.].
-
-Comunicación MQTT/HTTP/Otro: Protocolo usado para enviar/recibir datos.
-
-Modo de Bajo Consumo: Optimización de energía (si aplica).
-
-[Añade más características específicas de tu proyecto]
 
 🛠️ Requisitos de Hardware
 Lista los componentes de hardware necesarios para replicar tu proyecto.
@@ -149,40 +124,10 @@ Carga el código: Haz clic en el botón "Subir" (Upload) en tu IDE.
 
 Abre el Monitor Serial: Una vez cargado, abre el Monitor Serial (Herramientas > Monitor Serial) para ver la salida y verificar el funcionamiento. Asegúrate de configurar el baud rate correcto (ej., 115200).
 
-🤝 Contribución
-¡Las contribuciones son bienvenidas! Si encuentras un error, tienes una sugerencia de mejora o quieres añadir una nueva funcionalidad, por favor:
-
-Haz un "fork" del repositorio.
-
-Crea una nueva rama (git checkout -b feature/nueva-funcionalidad).
-
-Realiza tus cambios y haz "commit" de ellos (git commit -am 'feat: Añade nueva funcionalidad X').
-
-Sube tus cambios a tu "fork" (git push origin feature/nueva-funcionalidad).
-
-Abre un "Pull Request" describiendo tus cambios.
-
-
 ## 📜 License
 
 MIX AI is an MIT-licensed open source project.
 
-## Stay in touch
-
-- Authors -
-<br/> 
-[Joaquin Pappa](https://github.com/Joaco2603)
-<br/>
-[Andres Calvo](https://github.com/AndresACV)
-<br/>
-[Jeffry Valverde](https://github.com/JeffryVF)
-<br/>
-[Dylan]()
-
-<!-- - Website - [https://nestjs.com](https://nestjs.com/) -->
-<!-- - Twitter - [@nestframework](https://twitter.com/nestframework) -->
-
-## License
 
 Mix AI is [MIT licensed](LICENSE).
-# MixAi_microcontroler
+
