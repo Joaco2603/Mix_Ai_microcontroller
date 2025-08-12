@@ -1,7 +1,6 @@
 #include "BufferedTrack.h"
 
-bool BufferedTrack::open(const char* path, float g) {
-    gain = g;
+bool BufferedTrack::open(const char* path) {
     active = reader.open(path);
     bufferIndex = 0;
     bufferFill = 0;
@@ -12,8 +11,6 @@ bool BufferedTrack::open(const char* path, float g) {
 void BufferedTrack::refill() {
     if (!active) return;
     
-    // Solo hacer refill si realmente necesitamos más datos
-    // (cuando hemos consumido todo el buffer)
     if (bufferIndex < bufferFill) return;
     
     bufferFill = reader.readSamples(internalBuffer, BUFFER_SIZE);
@@ -33,9 +30,8 @@ size_t BufferedTrack::getSamples(int16_t* buffer, size_t numSamples) {
     while (samplesRead < numSamples && active) {
         if (bufferIndex >= bufferFill) {
             refill();
-            // CRÍTICO: Verificar que refill() resetee bufferIndex
             if (bufferIndex >= bufferFill) {
-                // Si refill() falló o no reseteo bufferIndex
+                // TODO
                 Serial.printf("ERROR: After refill bufferIndex=%zu >= bufferFill=%zu\n", 
                              bufferIndex, bufferFill);
                 break;

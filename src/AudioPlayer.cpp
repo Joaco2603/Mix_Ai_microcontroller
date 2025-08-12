@@ -76,9 +76,9 @@ bool AudioPlayer::playMixedFiles(const char *f1, const char *f2, const char *f3)
     }
 
     mixer->begin();
-    mixer->addTrack(f1, 0.7f);
-    mixer->addTrack(f2, 0.3f);
-    mixer->addTrack(f3, 0.3f);
+    mixer->addTrack(f1, 1.0f);
+    mixer->addTrack(f2, 1.0f);
+    mixer->addTrack(f3, 1.0f);
     isPlaying = true;
     return true;
 }
@@ -88,49 +88,6 @@ void AudioPlayer::setMixer(AudioMixer *m)
     mixer = m;
 }
 
-
-void AudioPlayer::stop()
-{
-    // if (audio)
-    // {
-    //     audio->stopSong();
-    //     isPlaying = false;
-    //     currentFile = "";
-    //     Serial.println("Audio detenido");
-    // }
-}
-
-void AudioPlayer::pause()
-{
-    // if (audio && isPlaying)
-    // {
-    //     audio->pauseResume();
-    //     isPlaying = false;
-    //     Serial.println("Audio pausado");
-    // }
-}
-
-void AudioPlayer::resume()
-{
-    // if (audio && !isPlaying && currentFile != "")
-    // {
-    //     audio->pauseResume();
-    //     isPlaying = true;
-    //     Serial.println("Audio reanudado");
-    // }
-}
-
-void AudioPlayer::togglePlayPause()
-{
-    if (isPlaying)
-    {
-        pause();
-    }
-    else
-    {
-        resume();
-    }
-}
 
 void AudioPlayer::setVolume(int volume)
 {
@@ -201,8 +158,8 @@ void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
     int16_t stereoBuffer[1024];
     for (size_t i = 0; i < samples; ++i)
     {
-        stereoBuffer[2 * i] = buffer[i];     // Canal izquierdo
-        stereoBuffer[2 * i + 1] = buffer[i]; // Canal derecho
+        stereoBuffer[2 * i] = buffer[i];     // Left channel
+        stereoBuffer[2 * i + 1] = buffer[i]; // Right channel
     }
 
     size_t bytes_written;

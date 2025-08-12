@@ -26,13 +26,6 @@ size_t WavReader::readSamples(int16_t* buffer, size_t maxSamples) {
     return file.read((uint8_t*)buffer, maxSamples * sizeof(int16_t)) / sizeof(int16_t);
 }
 
-uint16_t WavReader::getNumChannels() const {
-    return numChannels;
-}
-
-uint32_t WavReader::getSampleRate() const {
-    return sampleRate;
-}
 
 bool WavReader::parseHeader() {
     // Resetear valores

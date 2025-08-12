@@ -3,12 +3,15 @@
 
 #include "WavReader.h"
 
-class BufferedTrack {
+class BufferedTrack
+{
 public:
-    bool open(const char* path, float gain = 1.0f);
-    size_t getSamples(int16_t* buffer, size_t numSamples);
+    bool open(const char *path);
+    size_t getSamples(int16_t *buffer, size_t numSamples);
     bool isActive() const;
-    void refill();  // recargar buffer si hace falta
+    void refill();
+    void setGain(float g) { gain = g; }
+    float getGain() const { return gain; }
     float gain = 1.0f;
 
 private:

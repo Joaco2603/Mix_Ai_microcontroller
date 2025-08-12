@@ -6,21 +6,22 @@
 class AudioMixer {
 public:
     void begin();
-    void addTrack(const char* filename, float gain = 1.0f);
+    int addTrack(const char* filename, float gain = 1.0f);
+    void setChannelVolume(int channel, float gain);
+    const BufferedTrack& getTrack(int channel) const;
     bool isActive() const;
     size_t mix(int16_t* outBuffer, size_t numSamples);
 
 private:
     struct Track {
-        WavReader reader;
+        BufferedTrack track;
         float gain = 1.0f;
-        bool active = false;
+        bool isActive = false;
     };
 
     static const int MAX_TRACKS = 4;
-    BufferedTrack tracks[MAX_TRACKS];
+    Track tracks[MAX_TRACKS];
     int trackCount = 0;
 };
 
 #endif
-

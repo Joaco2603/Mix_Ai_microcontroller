@@ -23,17 +23,17 @@ void setup()
   Serial.begin(115200);
   display.begin();
   SD.begin(4);
-  myWebServer.start();
+
+  myWebServer.start(&mixer);
+  audioPlayer.setMixer(&mixer);
 
   // Limpiar pantalla y configurar
   display.clear();
   display.setTextSize(2);
   display.println("Iniciando M5Core2...");
 
-  audioPlayer.setMixer(&mixer);
   audioPlayer.begin();
   audioPlayer.playMixedFiles("/guitar_output.wav", "/vocal_output.wav", "/bass_output.wav");
-  Serial.printf("Canales: %d, SampleRate: %lu\n", reader.getNumChannels(), reader.getSampleRate());
 
   // Conectar WiFi
   // Mostrar controles

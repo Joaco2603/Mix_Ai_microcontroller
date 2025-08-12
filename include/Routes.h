@@ -2,10 +2,11 @@
 #define ROUTES_H
 
 #include <ESPAsyncWebServer.h>
+#include "AudioMixer.h"
 
 class Routes {
-public:
-  static void init(AsyncWebServer& server);
+  public:
+    static void init(AsyncWebServer& server, AudioMixer* mixer);
 };
 
 #endif

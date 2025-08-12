@@ -26,10 +26,6 @@ private:
 
     bool begin();
     bool playMixedFiles(const char* f1, const char* f2, const char* f3);
-    void stop();
-    void pause();
-    void resume();
-    void togglePlayPause();
     
     void setVolume(int volume); // 0-21
     void volumeUp();
