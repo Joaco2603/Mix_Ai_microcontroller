@@ -1,15 +1,15 @@
 #include "Routes.h"
 #include <ArduinoJson.h>
-#include "AudioPlayer.h"
+#include "AudioMixer.h"
 
-extern AudioPlayer audioPlayer;
+extern AudioMixer* mixer;
 
 void Routes::init(AsyncWebServer& server) {
   server.on("/status", HTTP_GET, [](AsyncWebServerRequest* request){
     request->send(200, "text/plain", "ok");
   });
 
-  // Endpoint para regular el volumen por canal
+  // Endpoint that change volumes
   server.on("/volume", HTTP_POST, [](AsyncWebServerRequest* request){
     if (!request->hasParam("channel", true) || !request->hasParam("value", true)) {
       request->send(400, "application/json", "{\"error\":\"Missing channel or value\"}");
@@ -18,13 +18,17 @@ void Routes::init(AsyncWebServer& server) {
     int channel = request->getParam("channel", true)->value().toInt();
     int value = request->getParam("value", true)->value().toInt();
 
-    // Aquí deberías implementar la lógica para ajustar el volumen por canal
-    // Por ejemplo: audioPlayer.setChannelVolume(channel, value);
+    if (channel < 0 || channel >= AudioMixer::MAX_CHANNELS) {
+      request->send(400, "application/json", "{\"error\":\"Invalid channel\"}");
+      return;
+    }
+
+    mixer->setChannelGain(channel, value / 100.0f);
 
     request->send(200, "application/json", "{\"status\":\"volume set\"}");
   });
 
-  // Endpoint para mutear por canal
+  // Endpoint that mutes the channel
   server.on("/mute", HTTP_POST, [](AsyncWebServerRequest* request){
     if (!request->hasParam("channel", true)) {
       request->send(400, "application/json", "{\"error\":\"Missing channel\"}");
@@ -32,8 +36,12 @@ void Routes::init(AsyncWebServer& server) {
     }
     int channel = request->getParam("channel", true)->value().toInt();
 
-    // Aquí deberías implementar la lógica para mutear el canal
-    // Por ejemplo: audioPlayer.muteChannel(channel);
+    if (channel < 0 || channel >= AudioMixer::MAX_CHANNELS) {
+      request->send(400, "application/json", "{\"error\":\"Invalid channel\"}");
+      return;
+    }
+
+    mixer->setChannelGain(channel, 0.0f); // Mute the channel by setting gain to 0.0f
 
     request->send(200, "application/json", "{\"status\":\"channel muted\"}");
   });

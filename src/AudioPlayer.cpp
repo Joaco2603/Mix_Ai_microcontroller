@@ -76,10 +76,11 @@ bool AudioPlayer::playMixedFiles(const char *f1, const char *f2, const char *f3)
     }
 
     mixer->begin();
-    mixer->addTrack(f1, 0.7f);
-    mixer->addTrack(f2, 0.3f);
-    mixer->addTrack(f3, 0.3f);
+    mixer->addTrack(f1, 0.0f);
+    mixer->addTrack(f2, 0.0f);
+    mixer->addTrack(f3, 0.0f);
     isPlaying = true;
+    startPlayback();
     return true;
 }
 
@@ -89,7 +90,7 @@ void AudioPlayer::setMixer(AudioMixer *m)
 }
 
 
-void AudioPlayer::stop()
+void AudioPlayer::mute()
 {
     // if (audio)
     // {
@@ -98,38 +99,6 @@ void AudioPlayer::stop()
     //     currentFile = "";
     //     Serial.println("Audio detenido");
     // }
-}
-
-void AudioPlayer::pause()
-{
-    // if (audio && isPlaying)
-    // {
-    //     audio->pauseResume();
-    //     isPlaying = false;
-    //     Serial.println("Audio pausado");
-    // }
-}
-
-void AudioPlayer::resume()
-{
-    // if (audio && !isPlaying && currentFile != "")
-    // {
-    //     audio->pauseResume();
-    //     isPlaying = true;
-    //     Serial.println("Audio reanudado");
-    // }
-}
-
-void AudioPlayer::togglePlayPause()
-{
-    if (isPlaying)
-    {
-        pause();
-    }
-    else
-    {
-        resume();
-    }
 }
 
 void AudioPlayer::setVolume(int volume)
@@ -188,23 +157,37 @@ void AudioPlayer::update()
     {
         writeToI2S(buffer, n);
     }
-    else
+    else if(mixer->allTracksFinished())
     {
         display.println("Fin de reproduccion");
         isPlaying = false;
     }
 }
 
+void AudioPlayer::startPlayback() {
+    xTaskCreatePinnedToCore([](void* arg) {
+        AudioPlayer* self = (AudioPlayer*)arg;
+        int16_t buffer[512];  // 1024 bytes en stack
+        while (self->isPlaying) {
+            size_t frames = self->mixer->mix(buffer, 512);
+            self->writeToI2S(buffer, frames);
+        }
+        vTaskDelete(NULL);
+    }, "PlaybackTask", 8192, this, 1, NULL, 1); // Aumentar stack a 8192
+}
+
 
 void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
 {
-    int16_t stereoBuffer[1024];
+    // Buffer de 2048 bytes en stack - puede ser problemático
+    static int16_t stereoBuffer[1024]; // Usar static para evitar stack
+    
     for (size_t i = 0; i < samples; ++i)
     {
-        stereoBuffer[2 * i] = buffer[i];     // Canal izquierdo
-        stereoBuffer[2 * i + 1] = buffer[i]; // Canal derecho
+        stereoBuffer[2 * i] = buffer[i];     
+        stereoBuffer[2 * i + 1] = buffer[i]; 
     }
-
+    
     size_t bytes_written;
     esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
     if (err != ESP_OK)

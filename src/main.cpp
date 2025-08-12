@@ -33,7 +33,6 @@ void setup()
   audioPlayer.setMixer(&mixer);
   audioPlayer.begin();
   audioPlayer.playMixedFiles("/guitar_output.wav", "/vocal_output.wav", "/bass_output.wav");
-  Serial.printf("Canales: %d, SampleRate: %lu\n", reader.getNumChannels(), reader.getSampleRate());
 
   // Conectar WiFi
   // Mostrar controles

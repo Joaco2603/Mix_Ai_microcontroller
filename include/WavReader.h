@@ -10,8 +10,7 @@ public:
     bool open(const char* path);
     size_t readSamples(int16_t* buffer, size_t maxSamples);
     void close();
-    uint16_t getNumChannels() const;
-    uint32_t getSampleRate() const;
+
 
 private:
     File file;
