@@ -22,12 +22,17 @@ void WavReader::close() {
 }
 
 size_t WavReader::readSamples(int16_t* buffer, size_t maxSamples) {
-    if (!file || maxSamples == 0) return 0;
-    size_t bytesRequested = maxSamples * sizeof(int16_t);
-    size_t bytesRead = file.read((uint8_t*)buffer, bytesRequested);
-    return bytesRead / sizeof(int16_t);
+    if (!file) return 0;
+    return file.read((uint8_t*)buffer, maxSamples * sizeof(int16_t)) / sizeof(int16_t);
 }
 
+uint16_t WavReader::getNumChannels() const {
+    return numChannels;
+}
+
+uint32_t WavReader::getSampleRate() const {
+    return sampleRate;
+}
 
 bool WavReader::parseHeader() {
     // Resetear valores
