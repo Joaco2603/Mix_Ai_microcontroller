@@ -46,12 +46,12 @@ public:
     }
 
     int setMasterVolume(float volume);
+    bool pause(bool p);
     bool mute(bool mute);
     bool isMuted() const { return isPlaying; }
     int getVolume();
 
     bool isCurrentlyPlaying();
-    String getCurrentFile();
 
     void writeToI2S(int16_t *buffer, size_t samples, float volume);
 

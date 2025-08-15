@@ -85,10 +85,15 @@ int AudioPlayer::setMasterVolume(float volume)
     return currentVolume;
 }
 
+bool AudioPlayer::pause(bool p){
+    isPlaying = !p;
+    return isPlaying;
+}
+
 bool AudioPlayer::mute(bool m)
 {
-    isPlaying = !m;
-    return isPlaying;
+    currentVolume = 0;
+    return currentVolume != 0 ? true : false; 
 }
 
 
@@ -99,14 +104,9 @@ int AudioPlayer::getVolume()
 
 bool AudioPlayer::isCurrentlyPlaying()
 {
-    // return isPlaying && audio && audio->isRunning();
-    return true;
+    return isPlaying;
 }
 
-String AudioPlayer::getCurrentFile()
-{
-    return currentFile;
-}
 
 void AudioPlayer::update()
 {
@@ -121,7 +121,7 @@ void AudioPlayer::update()
 
     if (n > 0)
     {
-        writeToI2S(buffer, n, currentVolume);
+        writeToI2S(buffer, n);
     }
     else
     {
@@ -130,12 +130,12 @@ void AudioPlayer::update()
     }
 }
 
-void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples, float volume = 1.0f)
+void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
 {
     int16_t stereoBuffer[1024];
     for (size_t i = 0; i < samples; ++i)
     {
-        int32_t sample = static_cast<int32_t>(buffer[i] * volume);
+        int32_t sample = static_cast<int32_t>(buffer[i] * currentVolume);
         sample = std::clamp(sample, (int32_t)-32768, (int32_t)32767); // Clamping to prevent overflow
         stereoBuffer[2 * i] = buffer[i];                              // Left channel
         stereoBuffer[2 * i + 1] = buffer[i];                          // Right channel

@@ -55,8 +55,12 @@ void Routes::init(AsyncWebServer &server, AudioMixer *mixer, AudioPlayer *player
 
         request->send(200, "application/json", "{\"status\":\"channel mute updated\"}"); });
 
+    server.on("/stop",HTTP_POST,[mixer,player](AsyncWebServerRequest *request){
+
+    });
+
     // Mute / Unmute parlante
-    server.on("/muteSpeaker", HTTP_POST, [mixer, player](AsyncWebServerRequest *request)
+    server.on("/pause", HTTP_POST, [mixer, player](AsyncWebServerRequest *request)
               {
         if (!request->hasParam("mute", true)) {
             request->send(400, "application/json", "{\"error\":\"Missing mute\"}");
