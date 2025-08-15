@@ -12,6 +12,7 @@ class AudioPlayer
 private:
     // Audio *audio;
     bool isPlaying = true;
+    bool isMuted = false;
     int currentVolume;
     String currentFile;
 
@@ -48,12 +49,11 @@ public:
     int setMasterVolume(float volume);
     bool pause(bool p);
     bool mute(bool mute);
-    bool isMuted() const { return isPlaying; }
     int getVolume();
 
     bool isCurrentlyPlaying();
 
-    void writeToI2S(int16_t *buffer, size_t samples, float volume);
+    void writeToI2S(int16_t *buffer, size_t samples);
 
     void update();
 };

@@ -60,7 +60,7 @@ void Routes::init(AsyncWebServer &server, AudioMixer *mixer, AudioPlayer *player
     });
 
     // Mute / Unmute parlante
-    server.on("/pause", HTTP_POST, [mixer, player](AsyncWebServerRequest *request)
+    server.on("/muteSpeaker", HTTP_POST, [mixer, player](AsyncWebServerRequest *request)
               {
         if (!request->hasParam("mute", true)) {
             request->send(400, "application/json", "{\"error\":\"Missing mute\"}");
@@ -73,21 +73,21 @@ void Routes::init(AsyncWebServer &server, AudioMixer *mixer, AudioPlayer *player
 
         request->send(200, "application/json", "{\"status\":\"speaker mute updated\"}"); });
 
-    // Estado de todos los canales
-    server.on("/speakerStatus", HTTP_GET, [mixer, player](AsyncWebServerRequest *request) {
-        DynamicJsonDocument doc(512);
-        JsonArray arr = doc.createNestedArray("channels");
-        for (int i = 0; i < 4; i++) {
-            MixerChannel& ch = mixer->getChannel(i);
-            JsonObject obj = arr.createNestedObject();
-            obj["active"] = ch.isActive();
-            obj["gain"] = ch.getGain();
-            obj["muted"] = ch.isMuted();
-        }
-        doc["speakerMuted"] = player->isMuted(); // Probablemente querías esto en lugar de getVolume()
-        doc["speakerVolume"] = player->getVolume(); // Esto debería ser el volumen del speaker
-        String json;
-        serializeJson(doc, json);
-        request->send(200, "application/json", json);
-    });
+    // // Estado de todos los canales
+    // server.on("/speakerStatus", HTTP_GET, [mixer, player](AsyncWebServerRequest *request) {
+    //     DynamicJsonDocument doc(512);
+    //     JsonArray arr = doc.createNestedArray("channels");
+    //     for (int i = 0; i < 4; i++) {
+    //         MixerChannel& ch = mixer->getChannel(i);
+    //         JsonObject obj = arr.createNestedObject();
+    //         obj["active"] = ch.isActive();
+    //         obj["gain"] = ch.getGain();
+    //         obj["muted"] = ch.isMuted();
+    //     }
+    //     doc["speakerMuted"] = player->isMuted;
+    //     doc["speakerVolume"] = player->getVolume(); // Esto debería ser el volumen del speaker
+    //     String json;
+    //     serializeJson(doc, json);
+    //     request->send(200, "application/json", json);
+    // });
 }

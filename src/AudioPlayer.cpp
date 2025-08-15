@@ -92,8 +92,8 @@ bool AudioPlayer::pause(bool p){
 
 bool AudioPlayer::mute(bool m)
 {
-    currentVolume = 0;
-    return currentVolume != 0 ? true : false; 
+    isMuted = m;
+    return isMuted; 
 }
 
 
@@ -135,7 +135,7 @@ void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
     int16_t stereoBuffer[1024];
     for (size_t i = 0; i < samples; ++i)
     {
-        int32_t sample = static_cast<int32_t>(buffer[i] * currentVolume);
+        int32_t sample = static_cast<int32_t>(buffer[i] * !isMuted ? currentVolume : 0);
         sample = std::clamp(sample, (int32_t)-32768, (int32_t)32767); // Clamping to prevent overflow
         stereoBuffer[2 * i] = buffer[i];                              // Left channel
         stereoBuffer[2 * i + 1] = buffer[i];                          // Right channel
