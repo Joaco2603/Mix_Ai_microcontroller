@@ -4,6 +4,10 @@
 
 #include <driver/i2s.h>
 
+#include <algorithm>
+#include <iostream>
+#include <cstdint>
+
 // Configuración de pines I2S para M5Stack
 #define I2S_BCLK 12
 #define I2S_LRC 0
@@ -24,7 +28,7 @@ AudioPlayer::AudioPlayer()
 
 bool AudioPlayer::begin()
 {
-   // Configuración I2S
+    // Configuración I2S
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
         .sample_rate = SAMPLE_RATE,
@@ -45,7 +49,7 @@ bool AudioPlayer::begin()
         .data_out_num = 2,
         .data_in_num = I2S_PIN_NO_CHANGE};
 
- // Instalar y configurar I2S
+    // Instalar y configurar I2S
     esp_err_t err = i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
     if (err != ESP_OK)
     {
@@ -67,52 +71,26 @@ bool AudioPlayer::begin()
     return true;
 }
 
-bool AudioPlayer::playMixedFiles(const char *f1, const char *f2, const char *f3)
-{
-    if (!mixer)
-    {
-        Serial.println("[Error] mixer no inicializado");
-        return false;
-    }
 
-    mixer->begin();
-    mixer->addTrack(f1, 1.0f);
-    mixer->addTrack(f2, 1.0f);
-    mixer->addTrack(f3, 1.0f);
-    isPlaying = true;
-    return true;
-}
 
 void AudioPlayer::setMixer(AudioMixer *m)
 {
     mixer = m;
 }
 
-
-void AudioPlayer::setVolume(int volume)
+int AudioPlayer::setMasterVolume(float volume)
 {
-    if (volume < 0)
-        volume = 0;
-    if (volume > 21)
-        volume = 21;
-
-    currentVolume = volume;
-    // if (audio)
-    // {
-    //     audio->setVolume(currentVolume);
-    //     Serial.printf("Volumen: %d\n", currentVolume);
-    // }
+    volume = std::clamp(volume, 0.0f, 100.0f);
+    currentVolume = static_cast<int>(std::round((volume / 100.0f) * 21.0f));
+    return currentVolume;
 }
 
-void AudioPlayer::volumeUp()
+bool AudioPlayer::mute(bool m)
 {
-    setVolume(currentVolume + 1);
+    isPlaying = !m;
+    return isPlaying;
 }
 
-void AudioPlayer::volumeDown()
-{
-    setVolume(currentVolume - 1);
-}
 
 int AudioPlayer::getVolume()
 {
@@ -132,7 +110,7 @@ String AudioPlayer::getCurrentFile()
 
 void AudioPlayer::update()
 {
-    if (!isPlaying || !mixer)
+    if (!isPlaying)
     {
         isPlaying = false;
         return;
@@ -143,7 +121,7 @@ void AudioPlayer::update()
 
     if (n > 0)
     {
-        writeToI2S(buffer, n);
+        writeToI2S(buffer, n, currentVolume);
     }
     else
     {
@@ -152,20 +130,17 @@ void AudioPlayer::update()
     }
 }
 
-
-void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
+void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples, float volume = 1.0f)
 {
     int16_t stereoBuffer[1024];
     for (size_t i = 0; i < samples; ++i)
     {
-        stereoBuffer[2 * i] = buffer[i];     // Left channel
-        stereoBuffer[2 * i + 1] = buffer[i]; // Right channel
+        int32_t sample = static_cast<int32_t>(buffer[i] * volume);
+        sample = std::clamp(sample, (int32_t)-32768, (int32_t)32767); // Clamping to prevent overflow
+        stereoBuffer[2 * i] = buffer[i];                              // Left channel
+        stereoBuffer[2 * i + 1] = buffer[i];                          // Right channel
     }
 
     size_t bytes_written;
     esp_err_t err = i2s_write(I2S_NUM_0, stereoBuffer, samples * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
-    if (err != ESP_OK)
-    {
-        Serial.printf("Error en i2s_write: %d\n", err);
-    }
 }

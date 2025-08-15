@@ -11,32 +11,50 @@ class AudioPlayer
 {
 private:
     // Audio *audio;
-    bool isPlaying;
+    bool isPlaying = true;
     int currentVolume;
     String currentFile;
 
-    AudioMixer* mixer = nullptr;
+    AudioMixer *mixer = nullptr;
     int16_t outputBuffer[512];
 
-    
-    public:
+public:
     AudioPlayer();
-    
-    void setMixer(AudioMixer* mixer);
+
+    void setMixer(AudioMixer *mixer);
 
     bool begin();
-    bool playMixedFiles(const char* f1, const char* f2, const char* f3);
-    
-    void setVolume(int volume); // 0-21
-    void volumeUp();
-    void volumeDown();
+
+    template <int N>
+    bool playMixedFiles(const char *(&files)[N])
+    {
+        if (!mixer)
+        {
+            Serial.println("[Error] mixer no inicializado");
+            return false;
+        }
+
+        mixer->begin();
+
+        for (int i = 0; i < N; i++)
+        {
+            mixer->addTrack(files[i], 1.0f);
+        }
+
+        isPlaying = true;
+        return true;
+    }
+
+    int setMasterVolume(float volume);
+    bool mute(bool mute);
+    bool isMuted() const { return isPlaying; }
     int getVolume();
-    
+
     bool isCurrentlyPlaying();
     String getCurrentFile();
 
-    void writeToI2S(int16_t* buffer, size_t samples);
-    
+    void writeToI2S(int16_t *buffer, size_t samples, float volume);
+
     void update();
 };
 
