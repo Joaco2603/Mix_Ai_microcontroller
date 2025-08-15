@@ -53,7 +53,7 @@ public:
 
     bool isCurrentlyPlaying();
 
-    void writeToI2S(int16_t *buffer, size_t samples);
+    void writeToI2S(int16_t *buffer, size_t samples, int volumen);
 
     void update();
 };

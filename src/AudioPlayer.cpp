@@ -9,9 +9,13 @@
 #include <cstdint>
 
 // Configuración de pines I2S para M5Stack
-#define I2S_BCLK 12
-#define I2S_LRC 0
-#define I2S_DOUT 2
+// #define I2S_BCLK 12
+// #define I2S_LRC 0
+// #define I2S_DOUT 2
+
+#define I2S_BCLK 26
+#define I2S_LRC 25
+#define I2S_DOUT 22
 
 #define SAMPLE_RATE 44100
 #define I2S_PORT I2S_NUM_0
@@ -22,7 +26,7 @@ extern M5GFX display;
 AudioPlayer::AudioPlayer()
 {
     isPlaying = false;
-    currentVolume = 15;
+    currentVolume = 11;
     currentFile = "";
 }
 
@@ -72,7 +76,6 @@ bool AudioPlayer::begin()
 }
 
 
-
 void AudioPlayer::setMixer(AudioMixer *m)
 {
     mixer = m;
@@ -90,9 +93,9 @@ bool AudioPlayer::pause(bool p){
     return isPlaying;
 }
 
-bool AudioPlayer::mute(bool m)
+bool AudioPlayer::mute(bool enableMute)
 {
-    isMuted = m;
+    isMuted = !enableMute;
     return isMuted; 
 }
 
@@ -121,7 +124,7 @@ void AudioPlayer::update()
 
     if (n > 0)
     {
-        writeToI2S(buffer, n);
+        writeToI2S(buffer, n, (!isMuted ? getVolume() : 0));
     }
     else
     {
@@ -130,15 +133,16 @@ void AudioPlayer::update()
     }
 }
 
-void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples)
+void AudioPlayer::writeToI2S(int16_t *buffer, size_t samples, int volume)
 {
     int16_t stereoBuffer[1024];
     for (size_t i = 0; i < samples; ++i)
     {
-        int32_t sample = static_cast<int32_t>(buffer[i] * !isMuted ? currentVolume : 0);
-        sample = std::clamp(sample, (int32_t)-32768, (int32_t)32767); // Clamping to prevent overflow
-        stereoBuffer[2 * i] = buffer[i];                              // Left channel
-        stereoBuffer[2 * i + 1] = buffer[i];                          // Right channel
+        int32_t sample = static_cast<int32_t>(buffer[i]) * volume;  // aplicar volumen
+        sample = std::clamp(sample, (int32_t)-32768, (int32_t)32767);
+
+        stereoBuffer[2 * i]     = static_cast<int16_t>(sample); // Left
+        stereoBuffer[2 * i + 1] = static_cast<int16_t>(sample); // Right
     }
 
     size_t bytes_written;
